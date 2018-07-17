@@ -6,11 +6,10 @@
 class CMap {
 private:
 	VSMDA<uint8_t>* m_staticMap;
-	int m_maxX;
-	int m_maxY;
+	CVector m_size;
 
 public:
-	void Init(int x, int y, int mines);
+	void Init(CVector size, int mines);
 	void Quit();
 	void printMap();
 };

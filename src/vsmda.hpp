@@ -1,28 +1,28 @@
 #include <cstdlib>
+#include "vector.hpp"
 
 template <class T>
 class VSMDA
 {
 	private:
 		T* m_array;
-		size_t m_sizeX;
-		size_t m_sizeY;
+		CVector m_size;
 	public:
-		VSMDA(size_t x, size_t y):
-		m_sizeX (x), m_sizeY (y)
+		VSMDA(CVector size):
+		m_size(size)
 		{
-			m_array = new T [x*y];
+			m_array = new T [m_size.x*m_size.y];
 		};
 		~VSMDA()
 		{
 			delete[] m_array;
 		};
-		T Get(size_t x, size_t y)
+		T Get(CVector pos)
 		{
-			return m_array[y*m_sizeX+x];
+			return m_array[pos.y*m_size.x+pos.x];
 		};
-		void Set(size_t x, size_t y, T value)
+		void Set(CVector pos, T value)
 		{
-			m_array[y*m_sizeX+x] = value;
+			m_array[pos.y*m_size.x+pos.x] = value;
 		};
 };

@@ -7,7 +7,7 @@ using namespace std;
 int main()
 {
 	CMap Map;
-	Map.Init(10, 10, 10);
+	Map.Init(CVector(10, 10), 10);
 	cout << "Map Initialized!\n";
 	Map.printMap();
 	Map.Quit();
