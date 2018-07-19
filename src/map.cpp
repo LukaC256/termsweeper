@@ -42,6 +42,22 @@ void CMap::Init(const CVector size, const int mines)
 			}
 		}
 	}
+
+	// Generate number fields
+	for (size_t y = 0; y < m_size.y; y++)
+	{
+		for (size_t x = 0; x < m_size.x; x++)
+		{
+			CVector pos(x, y);
+			if (m_staticMap->Get(pos) == 9) continue;
+			int minecnt = 0;
+			for (size_t d = 0; d < 8; d++)
+			{
+				if (m_staticMap->Get(pos + vDirs[d]) == 9) minecnt++;
+			}
+			m_staticMap->Set(pos, minecnt);
+		}
+	}
 }
 
 void CMap::Quit()
@@ -62,10 +78,17 @@ void CMap::printMap()
 		cout << y << ' ';
 		for (size_t x = 0; x < m_size.x; x++) {
 			uint8_t iStaticField = m_staticMap->Get(CVector(x, y));
-			if (iStaticField == 9) {
+			switch (iStaticField)
+			{
+			case 9:
 				cout << charMine;
-			} else {
+				break;
+			case 0:
 				cout << charFree;
+				break;
+			default:
+				cout << (char) (48+iStaticField);
+				break;
 			}
 		}
 		cout << endl;

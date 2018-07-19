@@ -20,7 +20,11 @@ class VSMDA
 		};
 		T Get(CVector pos)
 		{
-			return m_array[pos.y*m_size.x+pos.x];
+			if (pos.x < 0 || pos.x >= m_size.x ||
+				pos.y < 0 || pos.y >= m_size.y)
+				return 0;
+			else
+				return m_array[pos.y*m_size.x+pos.x];
 		};
 		void Set(CVector pos, T value)
 		{
