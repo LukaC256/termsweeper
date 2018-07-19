@@ -2,6 +2,7 @@
 #include "vector.hpp"
 
 template <class T>
+// Variable Size Multi-Dimensional Array
 class VSMDA
 {
 	private:

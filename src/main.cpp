@@ -39,6 +39,7 @@ int main(int argc, char* args[])
 		}
 	}
 
+	// Sanity checks for the Parameters
 	if (iXSize <= 1 || iXSize > 26)
 	{
 		cout << "Invalid value for -x: " << iXSize << endl;
