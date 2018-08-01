@@ -6,6 +6,7 @@
 class CMap {
 private:
 	VSMDA<uint8_t>* m_staticMap;
+	VSMDA<uint8_t>* m_dynamicMap;
 	CVector m_size;
 
 public:

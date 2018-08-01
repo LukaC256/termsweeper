@@ -4,6 +4,19 @@
 
 using namespace std;
 
+void fPrintHelp()
+{
+	cout << "Positioned commands:\n";
+	cout << "\tTxy : Tries at field xy\n";
+	cout << "\tFxy : Flags field xy\n";
+	cout << "\t?xy : Marks field xy\n";
+	cout << "General commands:\n";
+	cout << "\tC : Tries all non-flagged fields\n";
+	cout << "\tS : Save the Game\n";
+	cout << "\tR : Restart the Game from the same settings\n";
+	cout << "\tQ : Quit\n";
+}
+
 int main(int argc, char* args[])
 {
 	int iXSize = 8; // Default values for the playfield
@@ -58,8 +71,25 @@ int main(int argc, char* args[])
 
 	CMap Map;
 	Map.Init(CVector(iXSize, iYSize), iMines);
-	cout << "Map Initialized!\n";
-	Map.printMap();
+	while (true)
+	{
+		Map.printMap();
+		cout << "\nPlease enter command (help with H): ";
+		char* pcCommand = new char;
+		cin >> pcCommand;
+		switch (pcCommand[0])
+		{
+		case 'Q':
+		case 'q':
+			delete pcCommand;
+			Map.Quit();
+			return 0;
+		case 'H':
+			fPrintHelp();
+			break;
+		}
+		delete pcCommand;
+	}
 	Map.Quit();
 	return 0;
 }

@@ -21,11 +21,13 @@ void CMap::Init(const CVector size, const int mines)
 {
 	m_size = size;
 	m_staticMap = new VSMDA<uint8_t>(m_size); // Allocate memory for the map
+	m_dynamicMap = new VSMDA<uint8_t>(m_size);
 
-	// Fill the Map with zeroes
+	// Fill the Map with zeroes / ones
 	for (size_t y = 0; y < m_size.y; y++) {
 		for (size_t x = 0; x < m_size.x; x++) {
 			m_staticMap->Set(CVector(x, y), 0);
+			m_dynamicMap->Set(CVector(x, y), 1);
 		}
 	}
 
@@ -77,17 +79,31 @@ void CMap::printMap()
 	for (size_t y = 0; y < m_size.y; y++) {
 		cout << y << ' ';
 		for (size_t x = 0; x < m_size.x; x++) {
-			uint8_t iStaticField = m_staticMap->Get(CVector(x, y));
-			switch (iStaticField)
+			uint8_t iDynamicField = m_dynamicMap->Get(CVector(x, y));
+			switch (iDynamicField)
 			{
-			case 9:
-				cout << charMine;
+			case 0:{
+				uint8_t iStaticField = m_staticMap->Get(CVector(x, y));
+				switch (iStaticField)
+				{
+				case 9:
+					cout << charMine;
+					break;
+				case 0:
+					cout << charFree;
+					break;
+				default:
+					cout << (char) (48+iStaticField);
+					break;
+				} break;}
+			case 1:
+				cout << charHidden;
 				break;
-			case 0:
-				cout << charFree;
+			case 2:
+				cout << charFlag;
 				break;
-			default:
-				cout << (char) (48+iStaticField);
+			case 3:
+				cout << '?';
 				break;
 			}
 		}
