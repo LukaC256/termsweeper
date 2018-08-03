@@ -1,6 +1,8 @@
 #include <iostream>
+#include <string>
 #include "vector.hpp"
 #include "map.hpp"
+
 
 using namespace std;
 
@@ -14,6 +16,7 @@ void fPrintHelp()
 	cout << "\tC : Tries all non-flagged fields\n";
 	cout << "\tS : Save the Game\n";
 	cout << "\tR : Restart the Game from the same settings\n";
+	cout << "\tV : Retype the Playfield\n";
 	cout << "\tQ : Quit\n";
 }
 
@@ -22,7 +25,7 @@ int main(int argc, char* args[])
 	int iXSize = 8; // Default values for the playfield
 	int iYSize = 8;
 	int iMines = 10;
-	for (size_t a = 0; a < argc; a++) // CLI-Arguments
+	for (size_t a = 0; a < argc; a++) // CLI-Argument parsing
 	{
 		char* arg = args[a]; // Get the first char
 		if (*arg == '-')
@@ -70,25 +73,33 @@ int main(int argc, char* args[])
 	}
 
 	CMap Map;
-	Map.Init(CVector(iXSize, iYSize), iMines);
-	while (true)
+	Map.Init(CVector(iXSize, iYSize), iMines); // Initializing Map
+	bool bContinueLoop = true;
+	while (bContinueLoop)
 	{
 		Map.printMap();
-		cout << "\nPlease enter command (help with H): ";
-		char* pcCommand = new char;
-		cin >> pcCommand;
-		switch (pcCommand[0])
+		while (bContinueLoop)
 		{
-		case 'Q':
-		case 'q':
-			delete pcCommand;
-			Map.Quit();
-			return 0;
-		case 'H':
-			fPrintHelp();
-			break;
+			cout << "\nPlease enter command (help with H): ";
+			string sCommand;
+			cin >> sCommand;
+			if (sCommand.size() < 1) continue;
+			switch (sCommand.at(0)) // Command parsing
+			{
+			case 'Q':
+			case 'q':
+				bContinueLoop = false;
+				break;
+			case 'H':
+			case 'h':
+				fPrintHelp();
+				break;
+			case 'V':
+			case 'v':
+				Map.printMap();
+				break;
+			}
 		}
-		delete pcCommand;
 	}
 	Map.Quit();
 	return 0;
