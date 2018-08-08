@@ -13,6 +13,8 @@ public:
 	void Init(CVector size, int mines);
 	void Quit();
 	void printMap();
+	bool Try(CVector pos);
+	void Flag(CVector pos);
 };
 
 #endif

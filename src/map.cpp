@@ -110,3 +110,40 @@ void CMap::printMap()
 		cout << endl;
 	}
 }
+
+bool CMap::Try(CVector pos)
+{
+	if (pos.x >= m_size.x || pos.x < 0 ||
+		pos.y >= m_size.y || pos.y < 0) return true;
+	if (m_dynamicMap->Get(pos) == 0) return true;
+	m_dynamicMap->Set(pos, 0);
+	switch (m_staticMap->Get(pos))
+	{
+	case 0:
+		for (size_t d = 0; d < 8; d++)
+		{
+			Try(pos + vDirs[d]);
+		}
+		break;
+	case 9:
+		return false;
+	default:
+		break;
+	}
+	return true;
+}
+
+void CMap::Flag(CVector pos)
+{
+	if (pos.x >= m_size.x || pos.x < 0 ||
+		pos.y >= m_size.y || pos.y < 0) return;
+	int field = m_dynamicMap->Get(pos);
+	if (field == 0) return;
+	if (field == 2)
+	{
+		m_dynamicMap->Set(pos, 0);
+	} else
+	{
+		m_dynamicMap->Set(pos, 2);
+	}
+}

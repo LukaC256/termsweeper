@@ -20,6 +20,14 @@ void fPrintHelp()
 	cout << "\tQ : Quit\n";
 }
 
+CVector fParsePosition(string input)
+{
+	int x = toupper((int)input.at(1)) - 65;
+	int y = ((int)input.at(2)) - 48;
+	if (x < 0 || y < 0) throw 1;
+	return CVector(x, y);
+}
+
 int main(int argc, char* args[])
 {
 	int iXSize = 8; // Default values for the playfield
@@ -75,30 +83,58 @@ int main(int argc, char* args[])
 	CMap Map;
 	Map.Init(CVector(iXSize, iYSize), iMines); // Initializing Map
 	bool bContinueLoop = true;
+	Map.printMap();
 	while (bContinueLoop)
 	{
-		Map.printMap();
-		while (bContinueLoop)
+		cout << "\nPlease enter command (help with H): ";
+		string sCommand;
+		cin >> sCommand;
+		if (sCommand.size() < 1) continue;
+		switch (sCommand.at(0)) // Command parsing
 		{
-			cout << "\nPlease enter command (help with H): ";
-			string sCommand;
-			cin >> sCommand;
-			if (sCommand.size() < 1) continue;
-			switch (sCommand.at(0)) // Command parsing
+		case 'T':
+		case 't':
+			try
 			{
-			case 'Q':
-			case 'q':
-				bContinueLoop = false;
-				break;
-			case 'H':
-			case 'h':
-				fPrintHelp();
-				break;
-			case 'V':
-			case 'v':
-				Map.printMap();
+				if (!Map.Try(fParsePosition(sCommand)))
+				{
+					Map.printMap();
+					cout << "Game Over!\n";
+					bContinueLoop = false;
+				} else
+				{
+					Map.printMap();
+				}
+			} catch (...)
+			{
+				cout << "Invalid or missing Position!\n";
 				break;
 			}
+			break;
+		case 'F':
+		case 'f':
+			try
+			{
+				Map.Flag(fParsePosition(sCommand));
+				Map.printMap();
+			} catch (...)
+			{
+				cout << "Invalid or missing Position!\n";
+				break;
+			}
+			break;
+		case 'Q':
+		case 'q':
+			bContinueLoop = false;
+			break;
+		case 'H':
+		case 'h':
+			fPrintHelp();
+			break;
+		case 'V':
+		case 'v':
+			Map.printMap();
+			break;
 		}
 	}
 	Map.Quit();
