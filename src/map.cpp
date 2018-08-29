@@ -133,6 +133,18 @@ bool CMap::Try(CVector pos)
 	return true;
 }
 
+bool CMap::TryAround(CVector pos)
+{
+	for (size_t d = 0; d < 8; d++)
+	{
+		if (m_dynamicMap->Get(pos + vDirs[d]) == 1)
+		{
+			if (!Try(pos+vDirs[d])) return false;
+		}
+	}
+	return true;
+}
+
 void CMap::Flag(CVector pos)
 {
 	if (pos.x >= m_size.x || pos.x < 0 ||

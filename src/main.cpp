@@ -10,10 +10,10 @@ void fPrintHelp()
 {
 	cout << "Positioned commands:\n";
 	cout << "\tTxy : Tries at field xy\n";
+	cout << "\tXxy : Try non-flagged fields around xy\n";
 	cout << "\tFxy : Flags field xy\n";
 	cout << "\t?xy : Marks field xy\n";
 	cout << "General commands:\n";
-	cout << "\tC : Tries all non-flagged fields\n";
 	cout << "\tS : Save the Game\n";
 	cout << "\tR : Restart the Game from the same settings\n";
 	cout << "\tV : Retype the Playfield\n";
@@ -117,6 +117,25 @@ int main(int argc, char* args[])
 			{
 				Map.Flag(fParsePosition(sCommand));
 				Map.printMap();
+			} catch (...)
+			{
+				cout << "Invalid or missing Position!\n";
+				break;
+			}
+			break;
+		case 'X':
+		case 'x':
+			try
+			{
+				if (!Map.TryAround(fParsePosition(sCommand)))
+				{
+					Map.printMap();
+					cout << "Game Over!\n";
+					bContinueLoop = false;
+				} else
+				{
+					Map.printMap();
+				}
 			} catch (...)
 			{
 				cout << "Invalid or missing Position!\n";

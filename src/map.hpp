@@ -14,6 +14,7 @@ public:
 	void Quit();
 	void printMap();
 	bool Try(CVector pos);
+	bool TryAround(CVector pos);
 	void Flag(CVector pos);
 };
 
