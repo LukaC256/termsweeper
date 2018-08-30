@@ -86,6 +86,7 @@ int main(int argc, char* args[])
 	Map.printMap();
 	while (bContinueLoop)
 	{
+		Map.printMessages();
 		cout << "\nPlease enter command (help with H): ";
 		string sCommand;
 		cin >> sCommand;

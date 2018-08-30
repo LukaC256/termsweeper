@@ -23,6 +23,8 @@ void CMap::Init(const CVector size, const int mines)
 	m_staticMap = new VSMDA<uint8_t>(m_size); // Allocate memory for the map
 	m_dynamicMap = new VSMDA<uint8_t>(m_size);
 
+	m_messageQueue = new queue<string>();
+
 	// Fill the Map with zeroes / ones
 	for (size_t y = 0; y < m_size.y; y++) {
 		for (size_t x = 0; x < m_size.x; x++) {
@@ -111,6 +113,15 @@ void CMap::printMap()
 	}
 }
 
+void CMap::printMessages()
+{
+	while (!m_messageQueue->empty())
+	{
+		cout << m_messageQueue->front() << endl;
+		m_messageQueue->pop();
+	}
+}
+
 bool CMap::Try(CVector pos)
 {
 	if (pos.x >= m_size.x || pos.x < 0 ||
@@ -135,9 +146,25 @@ bool CMap::Try(CVector pos)
 
 bool CMap::TryAround(CVector pos)
 {
+	if (m_staticMap->Get(pos) == 0)
+	{
+		m_messageQueue->push(string("This operation is not permitted!"));
+		return true;
+	}
+	int flagcnt = 0;
 	for (size_t d = 0; d < 8; d++)
 	{
-		if (m_dynamicMap->Get(pos + vDirs[d]) == 1)
+		if (m_dynamicMap->Get(pos + vDirs[d]) == 2) flagcnt++;
+	}
+	if (flagcnt < m_staticMap->Get(pos))
+	{
+		m_messageQueue->push(string("This operation is not permitted!"));
+		return true;
+	}
+
+	for (size_t d = 0; d < 8; d++)
+	{
+		if (m_dynamicMap->Get(pos + vDirs[d]) != 2)
 		{
 			if (!Try(pos+vDirs[d])) return false;
 		}
@@ -150,12 +177,18 @@ void CMap::Flag(CVector pos)
 	if (pos.x >= m_size.x || pos.x < 0 ||
 		pos.y >= m_size.y || pos.y < 0) return;
 	int field = m_dynamicMap->Get(pos);
-	if (field == 0) return;
+	if (field == 0)
+	{
+		m_messageQueue->push(string("This field cannot be flagged!"));
+		return;
+	}
 	if (field == 2)
 	{
-		m_dynamicMap->Set(pos, 0);
+		m_dynamicMap->Set(pos, 1);
+		m_messageQueue->push(string("Flag removed!"));
 	} else
 	{
 		m_dynamicMap->Set(pos, 2);
+		m_messageQueue->push(string("Field flagged!"));
 	}
 }
