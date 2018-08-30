@@ -184,7 +184,11 @@ bool CMap::TryAround(CVector pos)
 void CMap::Flag(CVector pos)
 {
 	if (pos.x >= m_size.x || pos.x < 0 ||
-		pos.y >= m_size.y || pos.y < 0) return;
+		pos.y >= m_size.y || pos.y < 0)
+	{
+		m_messageQueue->push(string("This field is outside the range!"));
+		return;
+	}
 	int field = m_dynamicMap->Get(pos);
 	if (field == 0)
 	{
@@ -199,5 +203,30 @@ void CMap::Flag(CVector pos)
 	{
 		m_dynamicMap->Set(pos, 2);
 		m_messageQueue->push(string("Field flagged!"));
+	}
+}
+
+void CMap::Mark(CVector pos)
+{
+	if (pos.x >= m_size.x || pos.x < 0 ||
+		pos.y >= m_size.y || pos.y < 0)
+	{
+		m_messageQueue->push(string("This field is outside the range!"));
+		return;
+	}
+	int field = m_dynamicMap->Get(pos);
+	if (field == 0)
+	{
+		m_messageQueue->push(string("This field cannot be marked!"));
+		return;
+	}
+	if (field == 3)
+	{
+		m_dynamicMap->Set(pos, 1);
+		m_messageQueue->push(string("Mark removed!"));
+	} else
+	{
+		m_dynamicMap->Set(pos, 3);
+		m_messageQueue->push(string("Field marked!"));
 	}
 }

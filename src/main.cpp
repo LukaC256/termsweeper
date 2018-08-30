@@ -18,6 +18,7 @@ void fPrintHelp()
 	cout << "\tR : Restart the Game from the same settings\n";
 	cout << "\tV : Retype the Playfield\n";
 	cout << "\tQ : Quit\n";
+	cout << "\nAll commands and parameters are case insensitive\n";
 }
 
 CVector fParsePosition(string input)
@@ -117,6 +118,17 @@ int main(int argc, char* args[])
 			try
 			{
 				Map.Flag(fParsePosition(sCommand));
+				Map.printMap();
+			} catch (...)
+			{
+				cout << "Invalid or missing Position!\n";
+				break;
+			}
+			break;
+		case '?':
+			try
+			{
+				Map.Mark(fParsePosition(sCommand));
 				Map.printMap();
 			} catch (...)
 			{

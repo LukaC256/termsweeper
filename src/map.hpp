@@ -20,6 +20,7 @@ public:
 	bool Try(CVector pos);
 	bool TryAround(CVector pos);
 	void Flag(CVector pos);
+	void Mark(CVector pos);
 };
 
 #endif
