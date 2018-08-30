@@ -74,13 +74,16 @@ void CMap::Quit()
 void CMap::printMap()
 {
 	cout << "  ";
-	for (size_t i = 0; i < m_size.x; i++) {
+	for (size_t i = 0; i < m_size.x; i++)
+	{
 		cout << (char) (65 + i);
 	}
 	cout << endl;
-	for (size_t y = 0; y < m_size.y; y++) {
+	for (size_t y = 0; y < m_size.y; y++)
+	{
 		cout << y << ' ';
-		for (size_t x = 0; x < m_size.x; x++) {
+		for (size_t x = 0; x < m_size.x; x++)
+		{
 			uint8_t iDynamicField = m_dynamicMap->Get(CVector(x, y));
 			switch (iDynamicField)
 			{
@@ -109,8 +112,14 @@ void CMap::printMap()
 				break;
 			}
 		}
-		cout << endl;
+		cout << ' ' << y << endl;
 	}
+	cout << "  ";
+	for (size_t i = 0; i < m_size.x; i++)
+	{
+		cout << (char) (65 + i);
+	}
+	cout << endl;
 }
 
 void CMap::printMessages()
