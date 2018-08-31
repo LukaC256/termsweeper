@@ -21,6 +21,7 @@ public:
 	bool TryAround(CVector pos);
 	void Flag(CVector pos);
 	void Mark(CVector pos);
+	bool GameWon();
 };
 
 #endif

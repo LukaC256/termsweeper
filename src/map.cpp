@@ -230,3 +230,12 @@ void CMap::Mark(CVector pos)
 		m_messageQueue->push(string("Field marked!"));
 	}
 }
+
+bool CMap::GameWon()
+{
+	for (size_t y = 0; y < m_size.y; y++)
+		for (size_t x = 0; x < m_size.x; x++)
+			if (m_staticMap->Get(CVector(x,y)) != 9 && m_dynamicMap->Get(CVector(x,y)) != 0)
+				return false;
+	return true;
+}

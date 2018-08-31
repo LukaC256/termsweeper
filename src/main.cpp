@@ -168,6 +168,11 @@ int main(int argc, char* args[])
 			Map.printMap();
 			break;
 		}
+		if (Map.GameWon())
+		{
+			cout << "Game Completed!\n";
+			break;
+		}
 	}
 	Map.Quit();
 	return 0;
