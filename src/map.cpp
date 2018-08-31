@@ -73,7 +73,7 @@ void CMap::Quit()
 
 void CMap::printMap()
 {
-	cout << "  ";
+	cout << "\x1b[H\x1b[J  ";
 	for (size_t i = 0; i < m_size.x; i++)
 	{
 		cout << (char) (65 + i);
@@ -98,7 +98,7 @@ void CMap::printMap()
 					cout << charFree;
 					break;
 				default:
-					cout << (char) (48+iStaticField);
+					cout << "\x1b[" << numberColors[iStaticField-1] << "m" << (char) (48+iStaticField) << "\x1b[39m";
 					break;
 				} break;}
 			case 1:
