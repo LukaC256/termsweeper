@@ -30,7 +30,8 @@ all : $(BINFILE)
 
 $(BINFILE) : $(OBJFILES)
 	echo "Make: Linking binary"
-	$(COMPILER) -o $(BINFILE) $(OBJFILES) $(GCCSUFFIX)
+	$(COMPILER) -o $@ $(OBJFILES) $(GCCSUFFIX)
+	strip $@
 	echo "Make: Build finished!"
 
 re : clean all
