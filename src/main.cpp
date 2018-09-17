@@ -29,6 +29,14 @@ CVector fParsePosition(string input)
 	return CVector(x, y);
 }
 
+bool fContinueQuestion()
+{
+	cout << "Do you want to continue with the same Settings? [y/N]";
+	char inchar = ' ';
+	cin >> inchar;
+	return (inchar == 'y' || inchar == 'Y');
+}
+
 int main(int argc, char* args[])
 {
 	int iXSize = 8; // Default values for the playfield
@@ -102,7 +110,14 @@ int main(int argc, char* args[])
 				{
 					Map.printMap();
 					cout << "Game Over!\n";
-					bContinueLoop = false;
+					if (fContinueQuestion())
+					{
+						Map.Quit();
+						Map.Init(CVector(iXSize, iYSize), iMines);
+						Map.printMap();
+					} else {
+						bContinueLoop = false;
+					}
 				} else
 				{
 					Map.printMap();
@@ -144,7 +159,14 @@ int main(int argc, char* args[])
 				{
 					Map.printMap();
 					cout << "Game Over!\n";
-					bContinueLoop = false;
+					if (fContinueQuestion())
+					{
+						Map.Quit();
+						Map.Init(CVector(iXSize, iYSize), iMines);
+						Map.printMap();
+					} else {
+						bContinueLoop = false;
+					}
 				} else
 				{
 					Map.printMap();
@@ -167,11 +189,24 @@ int main(int argc, char* args[])
 		case 'v':
 			Map.printMap();
 			break;
+		case 'r':
+		case 'R':
+			Map.Quit();
+			Map.Init(CVector(iXSize, iYSize), iMines);
+			Map.printMap();
+			break;
 		}
 		if (Map.GameWon())
 		{
 			cout << "Game Completed!\n";
-			break;
+			if (fContinueQuestion())
+			{
+				Map.Quit();
+				Map.Init(CVector(iXSize, iYSize), iMines);
+				Map.printMap();
+			} else {
+				break;
+			}
 		}
 	}
 	Map.Quit();
