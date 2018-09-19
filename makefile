@@ -1,5 +1,6 @@
 $(VERBOSE).SILENT:
 
+PREFIX = /usr/local/
 SRCDIR = src/
 OBJDIR = obj/
 BINDIR = bin/
@@ -23,7 +24,7 @@ help:
 	echo "make clean   - remove object files"
 	echo "make re      - recompile everything"
 	echo "               (-> delete objects -> compile all)"
-	echo "make install - install compiled binary to /usr/bin"
+	echo "make install - install compiled binary to PREFIX"
 	echo "               (requires superuser!)"
 
 all : $(BINFILE)
@@ -49,3 +50,6 @@ clean:
 	rm -f $(EXOBJECTS)
 	rm -f $(BINFILE)
 	echo "Make: removed $(EXOBJECTS) $(BINFILE)"
+
+install : $(BINFILE)
+	install -g staff -o root -m 755 $(BINFILE) $(PREFIX)bin/
