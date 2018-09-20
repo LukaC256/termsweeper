@@ -195,6 +195,22 @@ int main(int argc, char* args[])
 			Map.Init(CVector(iXSize, iYSize), iMines);
 			Map.printMap();
 			break;
+		case 's':
+		case 'S':
+		{
+			string sFilename;
+			cout << "Save Game as:";
+			cin >> sFilename;
+			if (Map.Save(sFilename))
+			{
+				cout << "Game Saved!\n";
+				bContinueLoop = false;
+				break;
+			} else {
+				cout << "Saving Failed!\n";
+				break;
+			}
+		}
 		}
 		if (Map.GameWon())
 		{
