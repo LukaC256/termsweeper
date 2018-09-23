@@ -244,7 +244,8 @@ bool CMap::GameWon()
 
 bool CMap::Save(const string filename)
 {
-	fstream ofile (filename, ios::in | ios::out | ios::binary);
+	cout << filename << endl;
+	fstream ofile (filename, ios::out | ios::binary);
 	if (!ofile.is_open())
 	{
 		cout << "Could not open the File!\n";
