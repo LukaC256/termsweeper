@@ -14,7 +14,6 @@ void fPrintHelp()
 	cout << "\tFxy : Flags field xy\n";
 	cout << "\t?xy : Marks field xy\n";
 	cout << "General commands:\n";
-	cout << "\tS : Save the Game\n";
 	cout << "\tR : Restart the Game from the same settings\n";
 	cout << "\tV : Retype the Playfield\n";
 	cout << "\tQ : Quit\n";
