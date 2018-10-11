@@ -4,7 +4,6 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
-#include <fstream>
 
 using namespace std;
 
@@ -239,27 +238,5 @@ bool CMap::GameWon()
 		for (size_t x = 0; x < m_size.x; x++)
 			if (m_staticMap->Get(CVector(x,y)) != 9 && m_dynamicMap->Get(CVector(x,y)) != 0)
 				return false;
-	return true;
-}
-
-bool CMap::Save(const string filename)
-{
-	cout << filename << endl;
-	fstream ofile (filename, ios::out | ios::binary);
-	if (!ofile.is_open())
-	{
-		cout << "Could not open the File!\n";
-		return false;
-	}
-	ofile.write("TSWS", 4);
-	ofile.write((char*) (&m_size), sizeof(m_size));
-	for (int y = 0; y < m_size.y; y++)
-	{
-		for (int x = 0; x < m_size.x; x++)
-		{
-			ofile.put(m_staticMap->Get(CVector(x, y)));
-			ofile.put(m_dynamicMap->Get(CVector(x, y)));
-		}
-	}
 	return true;
 }

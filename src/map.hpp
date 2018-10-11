@@ -22,7 +22,6 @@ public:
 	void Flag(CVector pos);
 	void Mark(CVector pos);
 	bool GameWon();
-	bool Save(const std::string filename);
 };
 
 #endif
