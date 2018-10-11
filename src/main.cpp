@@ -88,6 +88,8 @@ int main(int argc, char* args[])
 		return 1;
 	}
 
+	cout << "\x1b]2;Termsweeper\x1b\\";
+
 	CMap Map;
 	Map.Init(CVector(iXSize, iYSize), iMines); // Initializing Map
 	bool bContinueLoop = true;
