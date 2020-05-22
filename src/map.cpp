@@ -78,6 +78,14 @@ void CMap::Quit()
 	{
 		delete m_staticMap;
 	}
+	if (m_dynamicMap != NULL)
+	{
+		delete m_dynamicMap;
+	}
+	if (m_messageQueue != NULL)
+	{
+		delete m_messageQueue;
+	}
 }
 
 void CMap::printMap()
