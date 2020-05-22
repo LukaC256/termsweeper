@@ -24,7 +24,8 @@ CVector fParsePosition(string input)
 {
 	int x = toupper((int)input.at(1)) - 65;
 	int y = ((int)input.at(2)) - 48;
-	if (x < 0 || y < 0) throw 1;
+	if (x < 0 || y < 0)
+		throw 1;
 	return CVector(x, y);
 }
 
@@ -119,12 +120,10 @@ int main(int argc, char* args[])
 					} else {
 						bContinueLoop = false;
 					}
-				} else
-				{
+				} else {
 					Map.printMap();
 				}
-			} catch (...)
-			{
+			} catch (...) {
 				cout << "Invalid or missing Position!\n";
 				break;
 			}
@@ -135,8 +134,7 @@ int main(int argc, char* args[])
 			{
 				Map.Flag(fParsePosition(sCommand));
 				Map.printMap();
-			} catch (...)
-			{
+			} catch (...) {
 				cout << "Invalid or missing Position!\n";
 				break;
 			}
@@ -146,8 +144,7 @@ int main(int argc, char* args[])
 			{
 				Map.Mark(fParsePosition(sCommand));
 				Map.printMap();
-			} catch (...)
-			{
+			} catch (...) {
 				cout << "Invalid or missing Position!\n";
 				break;
 			}
@@ -168,12 +165,10 @@ int main(int argc, char* args[])
 					} else {
 						bContinueLoop = false;
 					}
-				} else
-				{
+				} else {
 					Map.printMap();
 				}
-			} catch (...)
-			{
+			} catch (...) {
 				cout << "Invalid or missing Position!\n";
 				break;
 			}

@@ -1,5 +1,4 @@
-#ifndef INC_VECTOR
-#define INC_VECTOR
+#pragma once
 
 class CVector
 {

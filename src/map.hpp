@@ -1,11 +1,11 @@
-#ifndef INC_MAP
-#define INC_MAP
+#pragma once
 #include <cstdint>
 #include <queue>
 #include <string>
 #include "vsmda.hpp"
 
-class CMap {
+class CMap
+{
 private:
 	VSMDA<uint8_t>* m_staticMap;
 	VSMDA<uint8_t>* m_dynamicMap;
@@ -23,5 +23,3 @@ public:
 	void Mark(CVector pos);
 	bool GameWon();
 };
-
-#endif
