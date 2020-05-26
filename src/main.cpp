@@ -110,7 +110,7 @@ int main(int argc, char* args[])
 			{
 				if (!Map.Try(fParsePosition(sCommand)))
 				{
-					Map.printMap();
+					Map.printMap(true);
 					cout << "Game Over!\n";
 					if (fContinueQuestion())
 					{
@@ -155,7 +155,7 @@ int main(int argc, char* args[])
 			{
 				if (!Map.TryAround(fParsePosition(sCommand)))
 				{
-					Map.printMap();
+					Map.printMap(true);
 					cout << "Game Over!\n";
 					if (fContinueQuestion())
 					{

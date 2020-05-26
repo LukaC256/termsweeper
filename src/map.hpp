@@ -15,7 +15,7 @@ private:
 public:
 	void Init(CVector size, int mines);
 	void Quit();
-	void printMap();
+	void printMap(bool showEntireField = false);
 	void printMessages();
 	bool Try(CVector pos);
 	bool TryAround(CVector pos);

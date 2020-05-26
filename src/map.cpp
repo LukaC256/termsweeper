@@ -88,7 +88,7 @@ void CMap::Quit()
 	}
 }
 
-void CMap::printMap()
+void CMap::printMap(bool showEntireField)
 {
 	cout << "\x1b[H\x1b[J  ";
 	for (size_t i = 0; i < m_size.x; i++)
@@ -101,7 +101,7 @@ void CMap::printMap()
 		cout << y << ' ';
 		for (size_t x = 0; x < m_size.x; x++)
 		{
-			uint8_t iDynamicField = m_dynamicMap->Get(CVector(x, y));
+			uint8_t iDynamicField = (showEntireField ? 0 : m_dynamicMap->Get(CVector(x, y)));
 			switch (iDynamicField)
 			{
 			case 0:
