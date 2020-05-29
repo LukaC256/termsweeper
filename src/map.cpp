@@ -113,7 +113,11 @@ void CMap::printMap(bool showEntireField)
 					cout << charMine;
 					break;
 				case 0:
-					cout << charFree;
+					if ((x + (y%2)) % 2)
+					{
+						cout << "\x1b[90m" << charFree << "\x1b[39m";
+					} else
+						cout << charFree;
 					break;
 				default:
 					cout << "\x1b[" << numberColors[iStaticField-1] << "m" << (char) (48+iStaticField) << "\x1b[39m";
@@ -122,7 +126,11 @@ void CMap::printMap(bool showEntireField)
 				break;
 			}
 			case 1:
-				cout << charHidden;
+				if ((x + (y%2)) % 2)
+				{
+					cout << "\x1b[90m" << charHidden << "\x1b[39m";
+				} else
+					cout << charHidden;
 				break;
 			case 2:
 				cout << charFlag;
