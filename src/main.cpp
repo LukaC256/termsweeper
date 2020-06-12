@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <readline/readline.h>
 #include "vector.hpp"
 #include "map.hpp"
 
@@ -98,9 +99,10 @@ int main(int argc, char* args[])
 	while (bContinueLoop)
 	{
 		Map.printMessages();
-		cout << "\nPlease enter command (help with H): ";
-		string sCommand;
-		cin >> sCommand;
+		char* line = readline("Please enter command (help with H): ");
+		string sCommand(line);
+		delete[] line;
+
 		if (sCommand.size() < 1) continue;
 		switch (sCommand.at(0)) // Command parsing
 		{
