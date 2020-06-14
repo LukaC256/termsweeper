@@ -3,6 +3,7 @@
 #include "vector.hpp"
 #include <cstdlib>
 #include <ctime>
+#include <random>
 #include <iostream>
 
 using namespace std;
@@ -38,12 +39,15 @@ void CMap::Init(const CVector size, const int mines)
 
 	// Place mines randomly, but if there's already one
 	// at that place, try again
-	srand(time(NULL)); // Initialize PSRNG
+	random_device seed_ng;
+	default_random_engine ran_ng(seed_ng()); // Seed generator
+	uniform_int_distribution<int> x_pos(0, m_size.x - 1);
+	uniform_int_distribution<int> y_pos(0, m_size.y - 1);
 	for (size_t i = 0; i < mines; i++)
 	{
 		while (true)
 		{
-			int x = rand() % m_size.x; int y = rand() % m_size.y;
+			int x = x_pos(ran_ng); int y = y_pos(ran_ng);
 			//cout << "pos: " << x << " : " << y << m_staticMap[x][y] << endl;
 			if (m_staticMap->Get(CVector(x, y)) != 9)
 			{
