@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <exception>
 #include <readline/readline.h>
 #include "vector.hpp"
 #include "map.hpp"
@@ -9,24 +10,35 @@ using namespace std;
 
 void fPrintHelp()
 {
-	cout << "Positioned commands:\n";
-	cout << "\tTxy : Tries at field xy\n";
-	cout << "\tXxy : Try non-flagged fields around xy\n";
-	cout << "\tFxy : Flags field xy\n";
-	cout << "\t?xy : Marks field xy\n";
-	cout << "General commands:\n";
-	cout << "\tR : Restart the Game from the same settings\n";
-	cout << "\tV : Retype the Playfield\n";
-	cout << "\tQ : Quit\n";
-	cout << "\nAll commands and parameters are case insensitive\n";
+	cout << "Positioned commands:\n"
+	        "\tTxy : Tries at field xy\n"
+	        "\tXxy : Try non-flagged fields around xy\n"
+	        "\tFxy : Flags field xy\n"
+	        "\t?xy : Marks field xy\n"
+	        "\tX-Coordinates are Letters, Y-Coordinates are Numbers.\n"
+		"\tThe order does not matter\n"
+	        "General commands:\n"
+	        "\tR : Restart the Game from the same settings\n"
+	        "\tV : Retype the Playfield\n"
+	        "\tQ : Quit\n"
+	        "\nAll commands and parameters are case insensitive\n";
 }
 
 CVector fParsePosition(string input)
 {
-	int x = toupper((int)input.at(1)) - 65;
-	int y = ((int)input.at(2)) - 48;
+	if (input.size() < 1)
+		throw invalid_argument("#0 at fParsePosition");
+	int x = -1, y = -1;
+	for (auto it = ++input.cbegin(); it != input.cend(); it++)
+	{
+		char c = *it;
+		if (isalpha(c) && x < 0) // X Coordinate
+			x = (int)toupper(c) - 65;
+		else if (isdigit(c) && y < 0) // Y Coordinate
+			y = (int)c - 48;
+	}
 	if (x < 0 || y < 0)
-		throw 1;
+		throw runtime_error("Missing or incomplete Position");
 	return CVector(x, y);
 }
 
@@ -125,8 +137,11 @@ int main(int argc, char* args[])
 				} else {
 					Map.printMap();
 				}
-			} catch (...) {
-				cout << "Invalid or missing Position!\n";
+			} catch (runtime_error& rte) {
+				cout << rte.what() << endl;
+				break;
+			} catch (exception& e) {
+				cout << "Unknown Exception: " << e.what() << endl;
 				break;
 			}
 			break;
@@ -136,8 +151,11 @@ int main(int argc, char* args[])
 			{
 				Map.Flag(fParsePosition(sCommand));
 				Map.printMap();
-			} catch (...) {
-				cout << "Invalid or missing Position!\n";
+			} catch (runtime_error& rte) {
+				cout << rte.what() << endl;
+				break;
+			} catch (exception& e) {
+				cout << "Unknown Exception: " << e.what() << endl;
 				break;
 			}
 			break;
@@ -146,8 +164,11 @@ int main(int argc, char* args[])
 			{
 				Map.Mark(fParsePosition(sCommand));
 				Map.printMap();
-			} catch (...) {
-				cout << "Invalid or missing Position!\n";
+			} catch (runtime_error& rte) {
+				cout << rte.what() << endl;
+				break;
+			} catch (exception& e) {
+				cout << "Unknown Exception: " << e.what() << endl;
 				break;
 			}
 			break;
@@ -170,8 +191,11 @@ int main(int argc, char* args[])
 				} else {
 					Map.printMap();
 				}
-			} catch (...) {
-				cout << "Invalid or missing Position!\n";
+			} catch (runtime_error& rte) {
+				cout << rte.what() << endl;
+				break;
+			} catch (exception& e) {
+				cout << "Unknown Exception: " << e.what() << endl;
 				break;
 			}
 			break;
