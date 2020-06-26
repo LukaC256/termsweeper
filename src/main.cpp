@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <exception>
+#include <getopt.h>
 #include <readline/readline.h>
 #include "vector.hpp"
 #include "map.hpp"
@@ -50,38 +51,37 @@ bool fContinueQuestion()
 	return (inchar == 'y' || inchar == 'Y');
 }
 
-int main(int argc, char* args[])
+int main(int argc, char* argv[])
 {
 	int iXSize = 8; // Default values for the playfield
 	int iYSize = 8;
 	int iMines = 10;
-	for (size_t a = 0; a < argc; a++) // CLI-Argument parsing
+	while (true)
 	{
-		char* arg = args[a]; // Get the first char
-		if (*arg == '-')
+		static struct option long_options[] =
 		{
-			switch(arg[1]) //Decide based on the second char
-			{
-			case 'x': // X Size
-				a++; // Get the next argument
-				if (a >= argc) break; // Sanity check
-				iXSize = atoi(args[a]); // Turn it into an Integer
-				break;
-			case 'y': // Y Size
-				a++;
-				if (a >= argc) break;
-				iYSize = atoi(args[a]);
-				break;
-			case 'm': // Number of mines
-				a++;
-				if (a >= argc) break;
-				iMines = atoi(args[a]);
-				break;
-			default: // Error and Exit on unknown argument
-				cout << "Unrecognised argument " << arg[1] << "!\n";
-				return 1;
-				break;
-			}
+			{"width", required_argument, 0, 'x'},
+			{"height", required_argument, 0, 'y'},
+			{"mines", required_argument, 0, 'm'},
+			{0, 0, 0, 0}
+		};
+		int c = getopt_long(argc, argv, "x:y:m:", long_options, nullptr);
+		if (c == -1) break;
+		switch (c)
+		{
+		case 'x':
+			iXSize = atoi(optarg);
+			break;
+		case 'y':
+			iYSize = atoi(optarg);
+			break;
+		case 'm':
+			iMines = atoi(optarg);
+			break;
+		case '?':
+			return 1; 
+		default:
+			break;
 		}
 	}
 
