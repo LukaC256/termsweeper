@@ -51,6 +51,22 @@ bool fContinueQuestion()
 	return (inchar == 'y' || inchar == 'Y');
 }
 
+void fPrintOptions()
+{
+	cerr << "Usage: termsweeper [OPTIONS]\n"
+		"A simple clone of minesweeper\n\n"
+		"OPTIONS:\n"
+		"\t--width, -x  : Set playfield width (max 26) (default: 8)\n"
+		"\t--height, -h : Set plafield height (max 10) (default: 8)\n"
+		"\t--mines, -m  : Set number of mines (max width*height) (default: 10)\n"
+		"\t--help, -h   : This text\n";
+}
+
+void fPrintOptionHint()
+{
+	cerr << "Try \"termsweeper --help\" for more information\n";
+}
+
 int main(int argc, char* argv[])
 {
 	int iXSize = 8; // Default values for the playfield
@@ -63,9 +79,10 @@ int main(int argc, char* argv[])
 			{"width", required_argument, 0, 'x'},
 			{"height", required_argument, 0, 'y'},
 			{"mines", required_argument, 0, 'm'},
+			{"help", no_argument, 0, 'h'},
 			{0, 0, 0, 0}
 		};
-		int c = getopt_long(argc, argv, "x:y:m:", long_options, nullptr);
+		int c = getopt_long(argc, argv, "x:y:m:h", long_options, nullptr);
 		if (c == -1) break;
 		switch (c)
 		{
@@ -78,7 +95,11 @@ int main(int argc, char* argv[])
 		case 'm':
 			iMines = atoi(optarg);
 			break;
+		case 'h':
+			fPrintOptions();
+			return 0;
 		case '?':
+			fPrintOptionHint();
 			return 1; 
 		default:
 			break;
@@ -88,17 +109,20 @@ int main(int argc, char* argv[])
 	// Sanity checks for the Parameters
 	if (iXSize <= 1 || iXSize > 26)
 	{
-		cerr << "Invalid value for -x: " << iXSize << endl;
+		cerr << argv[0] << ": invalid playfield width: " << iXSize << endl;
+		fPrintOptionHint();
 		return 1;
 	}
 	if (iYSize <= 1 || iYSize > 10)
 	{
-		cerr << "Invalid value for -y: " << iYSize << endl;
+		cerr << argv[0] << ": invalid playfield height: " << iYSize << endl;
+		fPrintOptionHint();
 		return 1;
 	}
 	if (iMines < 1 || iMines >= iXSize*iYSize)
 	{
-		cerr << "Invalid value for -m: " << iMines << endl;
+		cerr << argv[0] << ": invalid number of mines: " << iMines << endl;
+		fPrintOptionHint();
 		return 1;
 	}
 
