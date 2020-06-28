@@ -88,17 +88,17 @@ int main(int argc, char* argv[])
 	// Sanity checks for the Parameters
 	if (iXSize <= 1 || iXSize > 26)
 	{
-		cout << "Invalid value for -x: " << iXSize << endl;
+		cerr << "Invalid value for -x: " << iXSize << endl;
 		return 1;
 	}
 	if (iYSize <= 1 || iYSize > 10)
 	{
-		cout << "Invalid value for -y: " << iYSize << endl;
+		cerr << "Invalid value for -y: " << iYSize << endl;
 		return 1;
 	}
 	if (iMines < 1 || iMines >= iXSize*iYSize)
 	{
-		cout << "Invalid value for -m: " << iMines << endl;
+		cerr << "Invalid value for -m: " << iMines << endl;
 		return 1;
 	}
 
