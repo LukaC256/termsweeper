@@ -136,6 +136,8 @@ int main(int argc, char* argv[])
 	{
 		Map.printMessages();
 		char* line = readline("Please enter command (help with H): ");
+		if (!line)
+			break;
 		string sCommand(line);
 		delete[] line;
 
