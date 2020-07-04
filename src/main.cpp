@@ -126,7 +126,7 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	cout << "\x1b]2;Termsweeper\x1b\\";
+	cout << "\x1b]2;Termsweeper\x1b\\\x1b[?1049h";
 
 	CMap Map;
 	Map.Init(CVector(iXSize, iYSize), iMines); // Initializing Map
@@ -258,5 +258,6 @@ int main(int argc, char* argv[])
 		}
 	}
 	Map.Quit();
+	cout << "\x1b[?1049l";
 	return 0;
 }
