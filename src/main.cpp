@@ -2,6 +2,8 @@
 #include <string>
 #include <exception>
 #include <getopt.h>
+#include <signal.h>
+#include <errno.h>
 #include <readline/readline.h>
 #include "vector.hpp"
 #include "map.hpp"
@@ -11,7 +13,7 @@ using namespace std;
 
 void fPrintHelp()
 {
-	cout << "Positioned commands:\n"
+	cerr << "Positioned commands:\n"
 	        "\tTxy : Tries at field xy\n"
 	        "\tXxy : Try non-flagged fields around xy\n"
 	        "\tFxy : Flags field xy\n"
@@ -45,7 +47,7 @@ CVector fParsePosition(string input)
 
 bool fContinueQuestion()
 {
-	cout << "Do you want to continue with the same Settings? [y/N]";
+	cerr << "Do you want to continue with the same Settings? [y/N]";
 	char inchar = ' ';
 	cin >> inchar;
 	return (inchar == 'y' || inchar == 'Y');
@@ -66,6 +68,25 @@ void fPrintOptionHint()
 {
 	cerr << "Try \"termsweeper --help\" for more information\n";
 }
+
+void fSigHandler(int signum)
+{
+	if (signum == SIGTSTP)
+	{
+		cerr << "\x1b[?1049l";
+		rl_free_line_state();
+		raise(SIGSTOP);
+	} else if (signum == SIGCONT) {
+		cerr << "\x1b[?1049h\x1b[H\x1b[JPress any key to continue...";
+		rl_reset_after_signal();
+		rl_replace_line("V\n", 1);
+		rl_point = rl_end;
+		//rl_stuff_char('\n');
+		rl_done = 1;
+		//rl_pending_input = '\n';
+	}
+}
+
 
 int main(int argc, char* argv[])
 {
@@ -126,7 +147,20 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	cout << "\x1b]2;Termsweeper\x1b\\\x1b[?1049h";
+	struct sigaction sact;
+	sact.sa_handler = fSigHandler;
+	if (sigaction(SIGTSTP, &sact, nullptr) < 0)
+	{
+		cerr << argv[0] << ": Error while setting SIGTSTP handler: " << strerror(errno);
+		return 1;
+	}
+	if (sigaction(SIGCONT, &sact, nullptr) < 0)
+	{
+		cerr << argv[0] << ": Error while setting SIGCONT handler: " << strerror(errno);
+		return 1;
+	}
+
+	cerr << "\x1b]2;Termsweeper\x1b\\\x1b[?1049h";
 
 	CMap Map;
 	Map.Init(CVector(iXSize, iYSize), iMines); // Initializing Map
@@ -151,7 +185,7 @@ int main(int argc, char* argv[])
 				if (!Map.Try(fParsePosition(sCommand)))
 				{
 					Map.printMap(true);
-					cout << "Game Over!\n";
+					cerr << "Game Over!\n";
 					if (fContinueQuestion())
 					{
 						Map.Quit();
@@ -164,10 +198,10 @@ int main(int argc, char* argv[])
 					Map.printMap();
 				}
 			} catch (runtime_error& rte) {
-				cout << rte.what() << endl;
+				cerr << rte.what() << endl;
 				break;
 			} catch (exception& e) {
-				cout << "Unknown Exception: " << e.what() << endl;
+				cerr << "Unknown Exception: " << e.what() << endl;
 				break;
 			}
 			break;
@@ -178,10 +212,10 @@ int main(int argc, char* argv[])
 				Map.Flag(fParsePosition(sCommand));
 				Map.printMap();
 			} catch (runtime_error& rte) {
-				cout << rte.what() << endl;
+				cerr << rte.what() << endl;
 				break;
 			} catch (exception& e) {
-				cout << "Unknown Exception: " << e.what() << endl;
+				cerr << "Unknown Exception: " << e.what() << endl;
 				break;
 			}
 			break;
@@ -191,10 +225,10 @@ int main(int argc, char* argv[])
 				Map.Mark(fParsePosition(sCommand));
 				Map.printMap();
 			} catch (runtime_error& rte) {
-				cout << rte.what() << endl;
+				cerr << rte.what() << endl;
 				break;
 			} catch (exception& e) {
-				cout << "Unknown Exception: " << e.what() << endl;
+				cerr << "Unknown Exception: " << e.what() << endl;
 				break;
 			}
 			break;
@@ -205,7 +239,7 @@ int main(int argc, char* argv[])
 				if (!Map.TryAround(fParsePosition(sCommand)))
 				{
 					Map.printMap(true);
-					cout << "Game Over!\n";
+					cerr << "Game Over!\n";
 					if (fContinueQuestion())
 					{
 						Map.Quit();
@@ -218,10 +252,10 @@ int main(int argc, char* argv[])
 					Map.printMap();
 				}
 			} catch (runtime_error& rte) {
-				cout << rte.what() << endl;
+				cerr << rte.what() << endl;
 				break;
 			} catch (exception& e) {
-				cout << "Unknown Exception: " << e.what() << endl;
+				cerr << "Unknown Exception: " << e.what() << endl;
 				break;
 			}
 			break;
@@ -246,7 +280,7 @@ int main(int argc, char* argv[])
 		}
 		if (Map.GameWon())
 		{
-			cout << "Game Completed!\n";
+			cerr << "Game Completed!\n";
 			if (fContinueQuestion())
 			{
 				Map.Quit();
@@ -258,6 +292,6 @@ int main(int argc, char* argv[])
 		}
 	}
 	Map.Quit();
-	cout << "\x1b[?1049l";
+	cerr << "\x1b[?1049l";
 	return 0;
 }

@@ -94,15 +94,15 @@ void CMap::Quit()
 
 void CMap::printMap(bool showEntireField)
 {
-	cout << "\x1b[H\x1b[J  ";
+	cerr << "\x1b[H\x1b[J  ";
 	for (size_t i = 0; i < m_size.x; i++)
 	{
-		cout << (char) (65 + i);
+		cerr << (char) (65 + i);
 	}
-	cout << endl;
+	cerr << endl;
 	for (size_t y = 0; y < m_size.y; y++)
 	{
-		cout << y << ' ';
+		cerr << y << ' ';
 		for (size_t x = 0; x < m_size.x; x++)
 		{
 			uint8_t iDynamicField = (showEntireField ? 0 : m_dynamicMap->Get(CVector(x, y)));
@@ -114,17 +114,17 @@ void CMap::printMap(bool showEntireField)
 				switch (iStaticField)
 				{
 				case 9:
-					cout << charMine;
+					cerr << charMine;
 					break;
 				case 0:
 					if ((x + (y%2)) % 2)
 					{
-						cout << "\x1b[90m" << charFree << "\x1b[39m";
+						cerr << "\x1b[90m" << charFree << "\x1b[39m";
 					} else
-						cout << charFree;
+						cerr << charFree;
 					break;
 				default:
-					cout << "\x1b[" << numberColors[iStaticField-1] << "m" << (char) (48+iStaticField) << "\x1b[39m";
+					cerr << "\x1b[" << numberColors[iStaticField-1] << "m" << (char) (48+iStaticField) << "\x1b[39m";
 					break;
 				}
 				break;
@@ -132,33 +132,33 @@ void CMap::printMap(bool showEntireField)
 			case 1:
 				if ((x + (y%2)) % 2)
 				{
-					cout << "\x1b[90m" << charHidden << "\x1b[39m";
+					cerr << "\x1b[90m" << charHidden << "\x1b[39m";
 				} else
-					cout << charHidden;
+					cerr << charHidden;
 				break;
 			case 2:
-				cout << charFlag;
+				cerr << charFlag;
 				break;
 			case 3:
-				cout << '?';
+				cerr << '?';
 				break;
 			}
 		}
-		cout << ' ' << y << endl;
+		cerr << ' ' << y << endl;
 	}
-	cout << "  ";
+	cerr << "  ";
 	for (size_t i = 0; i < m_size.x; i++)
 	{
-		cout << (char) (65 + i);
+		cerr << (char) (65 + i);
 	}
-	cout << endl;
+	cerr << endl;
 }
 
 void CMap::printMessages()
 {
 	while (!m_messageQueue->empty())
 	{
-		cout << m_messageQueue->front() << endl;
+		cerr << m_messageQueue->front() << endl;
 		m_messageQueue->pop();
 	}
 }
