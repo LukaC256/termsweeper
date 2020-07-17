@@ -280,6 +280,7 @@ int main(int argc, char* argv[])
 		}
 		if (Map.GameWon())
 		{
+			Map.printMap(true);
 			cerr << "Game Completed!\n";
 			if (fContinueQuestion())
 			{

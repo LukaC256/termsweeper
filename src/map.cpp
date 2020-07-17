@@ -22,6 +22,7 @@ const CVector vDirs[] = {
 void CMap::Init(const CVector size, const int mines)
 {
 	m_size = size;
+	m_mines = mines;
 	m_staticMap = new VSMDA<uint8_t>(m_size); // Allocate memory for the map
 	m_dynamicMap = new VSMDA<uint8_t>(m_size);
 
@@ -43,7 +44,7 @@ void CMap::Init(const CVector size, const int mines)
 	default_random_engine ran_ng(seed_ng()); // Seed generator
 	uniform_int_distribution<int> x_pos(0, m_size.x - 1);
 	uniform_int_distribution<int> y_pos(0, m_size.y - 1);
-	for (size_t i = 0; i < mines; i++)
+	for (size_t i = 0; i < m_mines; i++)
 	{
 		while (true)
 		{
@@ -100,6 +101,8 @@ void CMap::printMap(bool showEntireField)
 		cerr << (char) (65 + i);
 	}
 	cerr << endl;
+
+	int num_flags = 0;
 	for (size_t y = 0; y < m_size.y; y++)
 	{
 		cerr << y << ' ';
@@ -138,6 +141,7 @@ void CMap::printMap(bool showEntireField)
 				break;
 			case 2:
 				cerr << charFlag;
+				num_flags++;
 				break;
 			case 3:
 				cerr << '?';
@@ -152,6 +156,7 @@ void CMap::printMap(bool showEntireField)
 		cerr << (char) (65 + i);
 	}
 	cerr << endl;
+	cerr << "Flags: " << num_flags << "/" << m_mines << endl;
 }
 
 void CMap::printMessages()
@@ -273,6 +278,15 @@ bool CMap::GameWon()
 		{
 			if (m_staticMap->Get(CVector(x,y)) != 9 && m_dynamicMap->Get(CVector(x,y)) != 0)
 				return false;
+		}
+	}
+	// Game is won, set all mines under flags
+	for (size_t y = 0; y < m_size.y; y++)
+	{
+		for (size_t x = 0; x < m_size.x; x++)
+		{
+			if (m_staticMap->Get(CVector(x,y)) == 9)
+				m_dynamicMap->Set(CVector(x,y), 2);
 		}
 	}
 	return true;

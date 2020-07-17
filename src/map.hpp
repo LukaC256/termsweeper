@@ -11,6 +11,7 @@ private:
 	VSMDA<uint8_t>* m_dynamicMap;
 	std::queue<std::string>* m_messageQueue;
 	CVector m_size;
+	int m_mines;
 
 public:
 	void Init(CVector size, int mines);
