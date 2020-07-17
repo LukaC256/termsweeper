@@ -108,16 +108,21 @@ void CMap::printMap(bool showEntireField)
 		cerr << y << ' ';
 		for (size_t x = 0; x < m_size.x; x++)
 		{
-			uint8_t iDynamicField = (showEntireField ? 0 : m_dynamicMap->Get(CVector(x, y)));
+			uint8_t iDynamicField = m_dynamicMap->Get(CVector(x, y));
+			uint8_t iStaticField = m_staticMap->Get(CVector(x, y));
+			if (showEntireField && iDynamicField != 2)
+				iDynamicField = 0;
 			switch (iDynamicField)
 			{
 			case 0:
 			{
-				uint8_t iStaticField = m_staticMap->Get(CVector(x, y));
 				switch (iStaticField)
 				{
 				case 9:
-					cerr << charMine;
+					if (showEntireField)
+						cerr << "\x1b[91m" << charMine << "\x1b[39m";
+					else
+						cerr << "‽"; // This SHOULD be unreachable...
 					break;
 				case 0:
 					if ((x + (y%2)) % 2)
@@ -140,7 +145,12 @@ void CMap::printMap(bool showEntireField)
 					cerr << charHidden;
 				break;
 			case 2:
-				cerr << charFlag;
+				if (showEntireField && iStaticField == 9)
+					cerr << "\x1b[92m" << charFlag << "\x1b[39m";
+				else if (showEntireField)
+					cerr << "\x1b[91m" << charFlag << "\x1b[39m";
+				else
+					cerr << charFlag;
 				num_flags++;
 				break;
 			case 3:
