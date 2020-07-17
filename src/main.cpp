@@ -5,6 +5,7 @@
 #include <signal.h>
 #include <errno.h>
 #include <readline/readline.h>
+#include <readline/history.h>
 #include "vector.hpp"
 #include "map.hpp"
 
@@ -176,6 +177,7 @@ int main(int argc, char* argv[])
 		delete[] line;
 
 		if (sCommand.size() < 1) continue;
+		bool commandValid = false;
 		switch (sCommand.at(0)) // Command parsing
 		{
 		case 'T':
@@ -197,6 +199,7 @@ int main(int argc, char* argv[])
 				} else {
 					Map.printMap();
 				}
+				commandValid = true;
 			} catch (runtime_error& rte) {
 				cerr << rte.what() << endl;
 				break;
@@ -211,6 +214,7 @@ int main(int argc, char* argv[])
 			{
 				Map.Flag(fParsePosition(sCommand));
 				Map.printMap();
+				commandValid = true;
 			} catch (runtime_error& rte) {
 				cerr << rte.what() << endl;
 				break;
@@ -224,6 +228,7 @@ int main(int argc, char* argv[])
 			{
 				Map.Mark(fParsePosition(sCommand));
 				Map.printMap();
+				commandValid = true;
 			} catch (runtime_error& rte) {
 				cerr << rte.what() << endl;
 				break;
@@ -251,6 +256,7 @@ int main(int argc, char* argv[])
 				} else {
 					Map.printMap();
 				}
+				commandValid = true;
 			} catch (runtime_error& rte) {
 				cerr << rte.what() << endl;
 				break;
@@ -266,18 +272,25 @@ int main(int argc, char* argv[])
 		case 'H':
 		case 'h':
 			fPrintHelp();
+			commandValid = true;
 			break;
 		case 'V':
 		case 'v':
 			Map.printMap();
+			commandValid = true;
 			break;
 		case 'r':
 		case 'R':
 			Map.Quit();
 			Map.Init(CVector(iXSize, iYSize), iMines);
 			Map.printMap();
+			commandValid = true;
+			break;
+		default:
 			break;
 		}
+		if (commandValid)
+			add_history(sCommand.data());
 		if (Map.GameWon())
 		{
 			Map.printMap(true);
