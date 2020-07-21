@@ -20,16 +20,16 @@ const CVector vDirs[] = {
 };
 
 CMap::CMap(const CVector size, const int mines) :
-	m_size(size), m_mines(mines), m_staticMap(new VSMDA<uint8_t>(size)),
-	m_dynamicMap(new VSMDA<uint8_t>(size))
+	m_size(size), m_mines(mines), m_staticMap(size),
+	m_dynamicMap(size)
 {
 	// Fill the Map with zeroes / ones
 	for (size_t y = 0; y < m_size.y; y++)
 	{
 		for (size_t x = 0; x < m_size.x; x++)
 		{
-			m_staticMap->Set(CVector(x, y), 0);
-			m_dynamicMap->Set(CVector(x, y), 1);
+			m_staticMap.Set(CVector(x, y), 0);
+			m_dynamicMap.Set(CVector(x, y), 1);
 		}
 	}
 
@@ -45,9 +45,9 @@ CMap::CMap(const CVector size, const int mines) :
 		{
 			int x = x_pos(ran_ng); int y = y_pos(ran_ng);
 			//cout << "pos: " << x << " : " << y << m_staticMap[x][y] << endl;
-			if (m_staticMap->Get(CVector(x, y)) != 9)
+			if (m_staticMap.Get(CVector(x, y)) != 9)
 			{
-				m_staticMap->Set(CVector(x, y), 9);
+				m_staticMap.Set(CVector(x, y), 9);
 				break;
 			}
 		}
@@ -59,28 +59,16 @@ CMap::CMap(const CVector size, const int mines) :
 		for (size_t x = 0; x < m_size.x; x++)
 		{
 			CVector pos(x, y);
-			if (m_staticMap->Get(pos) == 9)
+			if (m_staticMap.Get(pos) == 9)
 				continue;
 			int minecnt = 0;
 			for (size_t d = 0; d < 8; d++)
 			{
-				if (m_staticMap->Get(pos + vDirs[d]) == 9)
+				if (m_staticMap.Get(pos + vDirs[d]) == 9)
 					minecnt++;
 			}
-			m_staticMap->Set(pos, minecnt);
+			m_staticMap.Set(pos, minecnt);
 		}
-	}
-}
-
-CMap::~CMap()
-{
-	if (m_staticMap != NULL)
-	{
-		delete m_staticMap;
-	}
-	if (m_dynamicMap != NULL)
-	{
-		delete m_dynamicMap;
 	}
 }
 
@@ -99,8 +87,8 @@ void CMap::printMap(bool showEntireField)
 		cerr << y << ' ';
 		for (size_t x = 0; x < m_size.x; x++)
 		{
-			uint8_t iDynamicField = m_dynamicMap->Get(CVector(x, y));
-			uint8_t iStaticField = m_staticMap->Get(CVector(x, y));
+			uint8_t iDynamicField = m_dynamicMap.Get(CVector(x, y));
+			uint8_t iStaticField = m_staticMap.Get(CVector(x, y));
 			if (showEntireField && iDynamicField != 2)
 				iDynamicField = 0;
 			switch (iDynamicField)
@@ -174,10 +162,10 @@ bool CMap::Try(CVector pos)
 	if (pos.x >= m_size.x || pos.x < 0 ||
 		pos.y >= m_size.y || pos.y < 0)
 		return true;
-	if (m_dynamicMap->Get(pos) == 0)
+	if (m_dynamicMap.Get(pos) == 0)
 		return true;
-	m_dynamicMap->Set(pos, 0);
-	switch (m_staticMap->Get(pos))
+	m_dynamicMap.Set(pos, 0);
+	switch (m_staticMap.Get(pos))
 	{
 	case 0:
 		for (size_t d = 0; d < 8; d++)
@@ -195,7 +183,7 @@ bool CMap::Try(CVector pos)
 
 bool CMap::TryAround(CVector pos)
 {
-	if (m_staticMap->Get(pos) == 0)
+	if (m_staticMap.Get(pos) == 0)
 	{
 		m_messageQueue.push(string("This operation is not permitted!"));
 		return true;
@@ -203,10 +191,10 @@ bool CMap::TryAround(CVector pos)
 	int flagcnt = 0;
 	for (size_t d = 0; d < 8; d++)
 	{
-		if (m_dynamicMap->Get(pos + vDirs[d]) == 2)
+		if (m_dynamicMap.Get(pos + vDirs[d]) == 2)
 			flagcnt++;
 	}
-	if (flagcnt < m_staticMap->Get(pos))
+	if (flagcnt < m_staticMap.Get(pos))
 	{
 		m_messageQueue.push(string("This operation is not permitted!"));
 		return true;
@@ -214,7 +202,7 @@ bool CMap::TryAround(CVector pos)
 
 	for (size_t d = 0; d < 8; d++)
 	{
-		if (m_dynamicMap->Get(pos + vDirs[d]) != 2)
+		if (m_dynamicMap.Get(pos + vDirs[d]) != 2)
 		{
 			if (!Try(pos+vDirs[d]))
 				return false;
@@ -231,7 +219,7 @@ void CMap::Flag(CVector pos)
 		m_messageQueue.push(string("This field is outside the range!"));
 		return;
 	}
-	int field = m_dynamicMap->Get(pos);
+	int field = m_dynamicMap.Get(pos);
 	if (field == 0)
 	{
 		m_messageQueue.push(string("This field cannot be flagged!"));
@@ -239,10 +227,10 @@ void CMap::Flag(CVector pos)
 	}
 	if (field == 2)
 	{
-		m_dynamicMap->Set(pos, 1);
+		m_dynamicMap.Set(pos, 1);
 		m_messageQueue.push(string("Flag removed!"));
 	} else {
-		m_dynamicMap->Set(pos, 2);
+		m_dynamicMap.Set(pos, 2);
 		m_messageQueue.push(string("Field flagged!"));
 	}
 }
@@ -255,7 +243,7 @@ void CMap::Mark(CVector pos)
 		m_messageQueue.push(string("This field is outside the range!"));
 		return;
 	}
-	int field = m_dynamicMap->Get(pos);
+	int field = m_dynamicMap.Get(pos);
 	if (field == 0)
 	{
 		m_messageQueue.push(string("This field cannot be marked!"));
@@ -263,10 +251,10 @@ void CMap::Mark(CVector pos)
 	}
 	if (field == 3)
 	{
-		m_dynamicMap->Set(pos, 1);
+		m_dynamicMap.Set(pos, 1);
 		m_messageQueue.push(string("Mark removed!"));
 	} else {
-		m_dynamicMap->Set(pos, 3);
+		m_dynamicMap.Set(pos, 3);
 		m_messageQueue.push(string("Field marked!"));
 	}
 }
@@ -277,7 +265,7 @@ bool CMap::GameWon()
 	{
 		for (size_t x = 0; x < m_size.x; x++)
 		{
-			if (m_staticMap->Get(CVector(x,y)) != 9 && m_dynamicMap->Get(CVector(x,y)) != 0)
+			if (m_staticMap.Get(CVector(x,y)) != 9 && m_dynamicMap.Get(CVector(x,y)) != 0)
 				return false;
 		}
 	}
@@ -286,8 +274,8 @@ bool CMap::GameWon()
 	{
 		for (size_t x = 0; x < m_size.x; x++)
 		{
-			if (m_staticMap->Get(CVector(x,y)) == 9)
-				m_dynamicMap->Set(CVector(x,y), 2);
+			if (m_staticMap.Get(CVector(x,y)) == 9)
+				m_dynamicMap.Set(CVector(x,y), 2);
 		}
 	}
 	return true;
