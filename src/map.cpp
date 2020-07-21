@@ -19,15 +19,10 @@ const CVector vDirs[] = {
 	CVector(1, 1)
 };
 
-void CMap::Init(const CVector size, const int mines)
+CMap::CMap(const CVector size, const int mines) :
+	m_size(size), m_mines(mines), m_staticMap(new VSMDA<uint8_t>(size)),
+	m_dynamicMap(new VSMDA<uint8_t>(size))
 {
-	m_size = size;
-	m_mines = mines;
-	m_staticMap = new VSMDA<uint8_t>(m_size); // Allocate memory for the map
-	m_dynamicMap = new VSMDA<uint8_t>(m_size);
-
-	m_messageQueue = new queue<string>();
-
 	// Fill the Map with zeroes / ones
 	for (size_t y = 0; y < m_size.y; y++)
 	{
@@ -77,7 +72,7 @@ void CMap::Init(const CVector size, const int mines)
 	}
 }
 
-void CMap::Quit()
+CMap::~CMap()
 {
 	if (m_staticMap != NULL)
 	{
@@ -86,10 +81,6 @@ void CMap::Quit()
 	if (m_dynamicMap != NULL)
 	{
 		delete m_dynamicMap;
-	}
-	if (m_messageQueue != NULL)
-	{
-		delete m_messageQueue;
 	}
 }
 
@@ -171,10 +162,10 @@ void CMap::printMap(bool showEntireField)
 
 void CMap::printMessages()
 {
-	while (!m_messageQueue->empty())
+	while (!m_messageQueue.empty())
 	{
-		cerr << m_messageQueue->front() << endl;
-		m_messageQueue->pop();
+		cerr << m_messageQueue.front() << endl;
+		m_messageQueue.pop();
 	}
 }
 
@@ -206,7 +197,7 @@ bool CMap::TryAround(CVector pos)
 {
 	if (m_staticMap->Get(pos) == 0)
 	{
-		m_messageQueue->push(string("This operation is not permitted!"));
+		m_messageQueue.push(string("This operation is not permitted!"));
 		return true;
 	}
 	int flagcnt = 0;
@@ -217,7 +208,7 @@ bool CMap::TryAround(CVector pos)
 	}
 	if (flagcnt < m_staticMap->Get(pos))
 	{
-		m_messageQueue->push(string("This operation is not permitted!"));
+		m_messageQueue.push(string("This operation is not permitted!"));
 		return true;
 	}
 
@@ -237,22 +228,22 @@ void CMap::Flag(CVector pos)
 	if (pos.x >= m_size.x || pos.x < 0 ||
 		pos.y >= m_size.y || pos.y < 0)
 	{
-		m_messageQueue->push(string("This field is outside the range!"));
+		m_messageQueue.push(string("This field is outside the range!"));
 		return;
 	}
 	int field = m_dynamicMap->Get(pos);
 	if (field == 0)
 	{
-		m_messageQueue->push(string("This field cannot be flagged!"));
+		m_messageQueue.push(string("This field cannot be flagged!"));
 		return;
 	}
 	if (field == 2)
 	{
 		m_dynamicMap->Set(pos, 1);
-		m_messageQueue->push(string("Flag removed!"));
+		m_messageQueue.push(string("Flag removed!"));
 	} else {
 		m_dynamicMap->Set(pos, 2);
-		m_messageQueue->push(string("Field flagged!"));
+		m_messageQueue.push(string("Field flagged!"));
 	}
 }
 
@@ -261,22 +252,22 @@ void CMap::Mark(CVector pos)
 	if (pos.x >= m_size.x || pos.x < 0 ||
 		pos.y >= m_size.y || pos.y < 0)
 	{
-		m_messageQueue->push(string("This field is outside the range!"));
+		m_messageQueue.push(string("This field is outside the range!"));
 		return;
 	}
 	int field = m_dynamicMap->Get(pos);
 	if (field == 0)
 	{
-		m_messageQueue->push(string("This field cannot be marked!"));
+		m_messageQueue.push(string("This field cannot be marked!"));
 		return;
 	}
 	if (field == 3)
 	{
 		m_dynamicMap->Set(pos, 1);
-		m_messageQueue->push(string("Mark removed!"));
+		m_messageQueue.push(string("Mark removed!"));
 	} else {
 		m_dynamicMap->Set(pos, 3);
-		m_messageQueue->push(string("Field marked!"));
+		m_messageQueue.push(string("Field marked!"));
 	}
 }
 

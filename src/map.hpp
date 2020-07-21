@@ -9,13 +9,13 @@ class CMap
 private:
 	VSMDA<uint8_t>* m_staticMap;
 	VSMDA<uint8_t>* m_dynamicMap;
-	std::queue<std::string>* m_messageQueue;
+	std::queue<std::string> m_messageQueue;
 	CVector m_size;
 	int m_mines;
 
 public:
-	void Init(CVector size, int mines);
-	void Quit();
+	CMap(CVector size, int mines);
+	~CMap();
 	void printMap(bool showEntireField = false);
 	void printMessages();
 	bool Try(CVector pos);

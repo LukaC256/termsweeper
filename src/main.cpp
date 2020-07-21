@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <exception>
+#include <memory>
 #include <getopt.h>
 #include <signal.h>
 #include <errno.h>
@@ -163,13 +164,12 @@ int main(int argc, char* argv[])
 
 	cerr << "\x1b]2;Termsweeper\x1b\\\x1b[?1049h";
 
-	CMap Map;
-	Map.Init(CVector(iXSize, iYSize), iMines); // Initializing Map
+	unique_ptr<CMap> Map = make_unique<CMap>(CVector(iXSize, iYSize), iMines); // Initializing Map
 	bool bContinueLoop = true;
-	Map.printMap();
+	Map->printMap();
 	while (bContinueLoop)
 	{
-		Map.printMessages();
+		Map->printMessages();
 		char* line = readline("Please enter command (help with H): ");
 		if (!line)
 			break;
@@ -184,20 +184,19 @@ int main(int argc, char* argv[])
 		case 't':
 			try
 			{
-				if (!Map.Try(fParsePosition(sCommand)))
+				if (!Map->Try(fParsePosition(sCommand)))
 				{
-					Map.printMap(true);
+					Map->printMap(true);
 					cerr << "Game Over!\n";
 					if (fContinueQuestion())
 					{
-						Map.Quit();
-						Map.Init(CVector(iXSize, iYSize), iMines);
-						Map.printMap();
+						Map = make_unique<CMap>(CVector(iXSize, iYSize), iMines);
+						Map->printMap();
 					} else {
 						bContinueLoop = false;
 					}
 				} else {
-					Map.printMap();
+					Map->printMap();
 				}
 				commandValid = true;
 			} catch (runtime_error& rte) {
@@ -212,8 +211,8 @@ int main(int argc, char* argv[])
 		case 'f':
 			try
 			{
-				Map.Flag(fParsePosition(sCommand));
-				Map.printMap();
+				Map->Flag(fParsePosition(sCommand));
+				Map->printMap();
 				commandValid = true;
 			} catch (runtime_error& rte) {
 				cerr << rte.what() << endl;
@@ -226,8 +225,8 @@ int main(int argc, char* argv[])
 		case '?':
 			try
 			{
-				Map.Mark(fParsePosition(sCommand));
-				Map.printMap();
+				Map->Mark(fParsePosition(sCommand));
+				Map->printMap();
 				commandValid = true;
 			} catch (runtime_error& rte) {
 				cerr << rte.what() << endl;
@@ -241,20 +240,19 @@ int main(int argc, char* argv[])
 		case 'x':
 			try
 			{
-				if (!Map.TryAround(fParsePosition(sCommand)))
+				if (!Map->TryAround(fParsePosition(sCommand)))
 				{
-					Map.printMap(true);
+					Map->printMap(true);
 					cerr << "Game Over!\n";
 					if (fContinueQuestion())
 					{
-						Map.Quit();
-						Map.Init(CVector(iXSize, iYSize), iMines);
-						Map.printMap();
+						Map = make_unique<CMap>(CVector(iXSize, iYSize), iMines);
+						Map->printMap();
 					} else {
 						bContinueLoop = false;
 					}
 				} else {
-					Map.printMap();
+					Map->printMap();
 				}
 				commandValid = true;
 			} catch (runtime_error& rte) {
@@ -276,14 +274,13 @@ int main(int argc, char* argv[])
 			break;
 		case 'V':
 		case 'v':
-			Map.printMap();
+			Map->printMap();
 			commandValid = true;
 			break;
 		case 'r':
 		case 'R':
-			Map.Quit();
-			Map.Init(CVector(iXSize, iYSize), iMines);
-			Map.printMap();
+			Map = make_unique<CMap>(CVector(iXSize, iYSize), iMines);
+			Map->printMap();
 			commandValid = true;
 			break;
 		default:
@@ -291,21 +288,19 @@ int main(int argc, char* argv[])
 		}
 		if (commandValid)
 			add_history(sCommand.data());
-		if (Map.GameWon())
+		if (Map->GameWon())
 		{
-			Map.printMap(true);
+			Map->printMap(true);
 			cerr << "Game Completed!\n";
 			if (fContinueQuestion())
 			{
-				Map.Quit();
-				Map.Init(CVector(iXSize, iYSize), iMines);
-				Map.printMap();
+				Map = make_unique<CMap>(CVector(iXSize, iYSize), iMines);
+				Map->printMap();
 			} else {
 				break;
 			}
 		}
 	}
-	Map.Quit();
 	cerr << "\x1b[?1049l";
 	return 0;
 }
