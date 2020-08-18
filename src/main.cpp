@@ -86,6 +86,9 @@ void fSigHandler(int signum)
 		//rl_stuff_char('\n');
 		rl_done = 1;
 		//rl_pending_input = '\n';
+	} else if (signum == SIGINT) {
+		cerr << "\x1b[?1049l";
+		exit(0);
 	}
 }
 
@@ -159,6 +162,11 @@ int main(int argc, char* argv[])
 	if (sigaction(SIGCONT, &sact, nullptr) < 0)
 	{
 		cerr << argv[0] << ": Error while setting SIGCONT handler: " << strerror(errno);
+		return 1;
+	}
+	if (sigaction(SIGINT, &sact, nullptr) < 0)
+	{
+		cerr << argv[0] << ": Error while setting SIGTERM handler: " << strerror(errno);
 		return 1;
 	}
 
