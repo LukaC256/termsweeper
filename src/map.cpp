@@ -99,19 +99,19 @@ void CMap::printMap(bool showEntireField)
 				{
 				case 9:
 					if (showEntireField)
-						cerr << "\x1b[91m" << charMine << "\x1b[39m";
+						cerr << "\x1b[1;31m" << charMine << "\x1b[0m";
 					else
 						cerr << "‽"; // This SHOULD be unreachable...
 					break;
 				case 0:
 					if ((x + (y%2)) % 2)
 					{
-						cerr << "\x1b[90m" << charFree << "\x1b[39m";
+						cerr << "\x1b[1;30m" << charFree << "\x1b[0m";
 					} else
 						cerr << charFree;
 					break;
 				default:
-					cerr << "\x1b[" << numberColors[iStaticField-1] << "m" << (char) (48+iStaticField) << "\x1b[39m";
+					cerr << "\x1b[" << numberColors[iStaticField-1] << "m" << (char) (48+iStaticField) << "\x1b[0m";
 					break;
 				}
 				break;
@@ -119,15 +119,15 @@ void CMap::printMap(bool showEntireField)
 			case 1:
 				if ((x + (y%2)) % 2)
 				{
-					cerr << "\x1b[90m" << charHidden << "\x1b[39m";
+					cerr << "\x1b[1;30m" << charHidden << "\x1b[0m";
 				} else
 					cerr << charHidden;
 				break;
 			case 2:
 				if (showEntireField && iStaticField == 9)
-					cerr << "\x1b[92m" << charFlag << "\x1b[39m";
+					cerr << "\x1b[1;32m" << charFlag << "\x1b[0m";
 				else if (showEntireField)
-					cerr << "\x1b[91m" << charFlag << "\x1b[39m";
+					cerr << "\x1b[1;31m" << charFlag << "\x1b[0m";
 				else
 					cerr << charFlag;
 				num_flags++;
